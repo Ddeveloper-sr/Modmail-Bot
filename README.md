@@ -23,8 +23,6 @@ DM the bot to open a support ticket. Staff manage tickets from a private Modmail
 - Permission checks
 - Environment-based configuration
 
-Components V2 is implemented with current `discord.js` builders such as `ContainerBuilder` and `TextDisplayBuilder`. citeturn1search1turn1search0
-
 ## Setup
 
 ### Requirements
@@ -62,8 +60,6 @@ EMOJI_CLOSE_ID=
 EMOJI_REOPEN_ID=
 ```
 
-The bot needs the message-related intents required for its Modmail workflow. Keep the bot token private.
-
 ## Application-Owned Emojis
 
 Emoji source assets are stored in:
@@ -77,9 +73,9 @@ assets/emojis/
 └── reopen.png
 ```
 
-The important distinction is that the PNGs are repository assets, while the **application emoji IDs** are the values used by the bot at runtime. The IDs should be placed in `.env` after the emojis have been registered to the Discord application.
+The PNGs are repository assets, while the **application emoji IDs** are runtime configuration. Register the assets with the Discord application, then put their IDs in `.env`.
 
-Discord's public custom-emoji documentation describes server-uploaded custom emojis as server-specific; this project therefore keeps emoji handling isolated behind `emojiManager.js` and uses application emoji IDs rather than relying on another server's emoji collection. citeturn0search2turn0search3
+The bot does not depend on an emoji hosted by another server.
 
 ## Project Structure
 
@@ -117,7 +113,6 @@ User DM
 Bot receives message
    │
    ├── Find existing ticket
-   │
    └── Create private staff channel if needed
    │
    ▼
