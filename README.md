@@ -2,32 +2,36 @@
 
 # Modmail Bot
 
-A modern Discord Modmail bot built with **discord.js** and designed around **Discord Components V2**.
+A modern Discord Modmail bot built with **discord.js** and **Discord Components V2**.
 
-[Features](#features) • [Setup](#setup) • [Configuration](#configuration) • [Project Structure](#project-structure)
+DM the bot to open a support ticket. Staff manage tickets from a private Modmail channel.
+
+[Features](#features) • [Setup](#setup) • [Configuration](#configuration) • [Emojis](#application-owned-emojis) • [Structure](#project-structure)
 
 </div>
 
 ## Features
 
-- 📩 DM-based Modmail
-- 🧵 Persistent ticket/thread handling
-- Components V2 staff interface
-- Reply, claim, close, and reopen controls
-- Application-owned Discord emoji support
-- Centralized logging with `logger.js`
+- DM-based Modmail
+- One persistent ticket per user
+- Private staff ticket channels
+- Components V2 ticket controls
+- Reply, claim, close, and reopen actions
+- Application-owned emoji IDs
+- Centralized `logger.js`
 - SQLite persistence
-- Permission and interaction validation
-- Transcript support
+- Permission checks
 - Environment-based configuration
+
+Components V2 is implemented with current `discord.js` builders such as `ContainerBuilder` and `TextDisplayBuilder`. citeturn1search1turn1search0
 
 ## Setup
 
 ### Requirements
 
-- Node.js 20 or newer
-- A Discord application and bot
-- Required Discord bot permissions and intents
+- Node.js 20+
+- A Discord application with a bot user
+- A server where the bot can create/manage Modmail channels
 
 ### Installation
 
@@ -35,23 +39,13 @@ A modern Discord Modmail bot built with **discord.js** and designed around **Dis
 git clone https://github.com/Ddeveloper-sr/Modmail-Bot.git
 cd Modmail-Bot
 npm install
-```
-
-Copy the example environment file:
-
-```bash
 cp .env.example .env
-```
-
-Fill in the required values, then start the bot:
-
-```bash
 npm start
 ```
 
 ## Configuration
 
-Create a `.env` file locally. Never commit it to GitHub.
+Create `.env` locally and never commit it.
 
 ```env
 DISCORD_TOKEN=
@@ -59,44 +53,54 @@ CLIENT_ID=
 GUILD_ID=
 MODMAIL_CATEGORY_ID=
 LOG_CHANNEL_ID=
+STAFF_ROLE_ID=
+DATABASE_PATH=./data/modmail.db
+EMOJI_MODMAIL_ID=
+EMOJI_REPLY_ID=
+EMOJI_CLAIM_ID=
+EMOJI_CLOSE_ID=
+EMOJI_REOPEN_ID=
 ```
+
+The bot needs the message-related intents required for its Modmail workflow. Keep the bot token private.
 
 ## Application-Owned Emojis
 
-Emoji source files belong in:
+Emoji source assets are stored in:
 
 ```text
 assets/emojis/
+├── modmail.png
+├── reply.png
+├── claim.png
+├── close.png
+└── reopen.png
 ```
 
-The intended workflow is:
+The important distinction is that the PNGs are repository assets, while the **application emoji IDs** are the values used by the bot at runtime. The IDs should be placed in `.env` after the emojis have been registered to the Discord application.
 
-1. Create the emoji assets locally.
-2. Upload/register them through **Discord Developer Portal → Your Application → Emoji**.
-3. Store the resulting emoji IDs in the local environment/configuration.
-4. Let the bot reference its application-owned emojis instead of depending on emojis hosted by another server.
-
-The repository contains the source assets only; application emoji IDs and secrets should remain configuration values.
+Discord's public custom-emoji documentation describes server-uploaded custom emojis as server-specific; this project therefore keeps emoji handling isolated behind `emojiManager.js` and uses application emoji IDs rather than relying on another server's emoji collection. citeturn0search2turn0search3
 
 ## Project Structure
 
 ```text
 src/
-├── commands/
-├── events/
-├── handlers/
-├── components/
-├── utils/
-│   ├── emojiManager.js
-│   └── logger.js
-├── database/
-└── index.js
+├── database.js
+├── config.js
+├── index.js
+├── modmail.js
+├── ui.js
+└── utils/
+    ├── emojiManager.js
+    └── logger.js
 
 assets/
 └── emojis/
-
-config/
-└── config.js
+    ├── modmail.png
+    ├── reply.png
+    ├── claim.png
+    ├── close.png
+    └── reopen.png
 
 .env.example
 .gitignore
@@ -104,18 +108,40 @@ package.json
 README.md
 ```
 
+## Modmail Flow
+
+```text
+User DM
+   │
+   ▼
+Bot receives message
+   │
+   ├── Find existing ticket
+   │
+   └── Create private staff channel if needed
+   │
+   ▼
+Staff Modmail channel
+   │
+   ├── Reply
+   ├── Claim
+   ├── Close
+   └── Reopen
+   │
+   ▼
+User receives staff reply by DM
+```
+
 ## Security
 
-Do **not** commit:
+Never commit:
 
-- Discord bot tokens
-- `.env` files
-- Database files containing private data
+- Bot tokens
+- `.env`
+- SQLite database files
 - Private transcripts
-- Other credentials or secrets
-
-Use `.env.example` for non-secret configuration documentation.
+- Credentials
 
 ## License
 
-This project is currently provided without a license. Add a license before distributing or publishing the source for reuse.
+No license has been selected yet. Add one before distributing the source under specific reuse terms.
